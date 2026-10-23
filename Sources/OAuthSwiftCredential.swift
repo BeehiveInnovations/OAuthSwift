@@ -424,7 +424,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
 
     open func isTokenExpired() -> Bool {
         if let expiresDate = oauthTokenExpiresAt {
-            return expiresDate <= Date()
+            // Compare timestamps because early iOS 27.2 betas lack Foundation's inclusive Date operators.
+            return expiresDate.timeIntervalSinceReferenceDate <= Date().timeIntervalSinceReferenceDate
         }
 
         // If no expires date is available we assume the token is still valid since it doesn't have an expiration date to check with.
